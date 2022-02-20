@@ -1,0 +1,3 @@
+[submodule "src/pyWebTranslate"]
+	path = src/pyWebTranslate
+	url = https://github.com/KeksUngegessen/pyWebTranslate.git

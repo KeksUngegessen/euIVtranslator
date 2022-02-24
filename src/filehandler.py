@@ -1,4 +1,16 @@
+import re
 import os.path
+
+
+# catches valid YAML key-value pairs
+# the first capture group catches any values between 2 quote marks
+YAML_REGEX = r'^(?!#).[A-z0-9._]+:[0-9]{0,1} "([^#]*)"'
+
+# catches 2 or more cyrillic characters - without EU4 specific formatting characters - that are between 2 quote marks
+CYRILLIC_REGEX = r'[\u0400-\u04FF]+[^["}§£$[a-z]*]*]*[\u0400-\u04FF.!?]+'
+
+YAML_PATTERN = re.compile(YAML_REGEX)
+CYRILLIC_PATTERN = re.compile(CYRILLIC_REGEX)
 
 
 def process_file(filepath: str) -> None:
@@ -7,20 +19,25 @@ def process_file(filepath: str) -> None:
 
     filetype: str = filepath.split('.')[len(filepath.split('.')) - 1]
 
-    if filetype == 'yml':
-        with open(filepath, 'r', encoding='utf-8-sig') as yaml_file:
-            for line in yaml_file:
-                print(_decode_yaml(line), end='')
-
-    if filetype == 'txt':
+    """if filetype == 'txt':
         with open(filepath, 'r', encoding='cp1251') as txt_file:
             for line in txt_file:
                 # print(line, end='')
-                pass
+                pass"""
+
+    if filetype == 'yml':
+        _process_yaml(filepath)
 
 
-def _decode_yaml(line_content: str) -> str:
-    """Reads a single line and returns its contents as a UTF-8 encoded string."""
+def _process_yaml(filepath: str) -> None:
+    """Read lines, which are displayed as cp1252 but encoded in cp1251, and get their contents with UTF-8 encoding."""
 
-    # the yaml file itself is encoded in utf-8 but the cyrillic inside in cp1251 and displayed as cp1252
-    return line_content.encode('cp1252').decode('cp1251')
+    with open(filepath, 'r', encoding='utf-8-sig') as yaml_file:
+        counter: int = -1
+        for line in yaml_file:
+            counter += 1
+            match: re.Match = YAML_PATTERN.search(line)
+            if match is not None:
+                gibberish: str = match.group(1)  # the text that needs decoding
+                gibberish.encode('cp1252').decode('cp1251')
+                # TODO

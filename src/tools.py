@@ -2,6 +2,8 @@ import os.path
 from typing import Generator
 from datetime import datetime
 
+os.system('color')
+
 
 def copy_dir_tree(src_path: str, dest_path: str) -> bool:
     """
@@ -21,7 +23,7 @@ def copy_dir_tree(src_path: str, dest_path: str) -> bool:
 
     for (dir_root, folders, _) in os.walk(src_path):
         for folder in folders:
-            subdir_dest_path: str = os.path.join(dir_root[len(src_path) + 1:], folder)
+            subdir_dest_path: str = os.path.join(dir_root[len(src_path):], folder)
             full_dest_path: str = os.path.join(dest_path, subdir_dest_path)
             if not os.path.isdir(full_dest_path):
                 os.mkdir(full_dest_path)
@@ -41,17 +43,45 @@ def get_file_paths_from(dir_path: str) -> Generator[str, None, None]:
 
     for (dir_root, _, files) in os.walk(dir_path):
         for file in files:
-            yield os.path.join(dir_path, dir_root[len(dir_path) + 1:], file)
+            yield os.path.join(dir_path, dir_root[len(dir_path):], file)
 
 
-def log(printable: any, logfile_path='logs.txt', hide_logs=False, write_logs=False) -> None:
+def log(printable: any, prio: int = 0, logfile_path='logs.txt', hide_logs=False, write_logs=False) -> None:
     """Creates a log with additional information such as time of creation."""
 
-    log_entry: str = f"{datetime.now().strftime('%H:%M:%S')}  {printable}"
+    log_entry: str = f"{BColors.color(prio)}{datetime.now().strftime('%H:%M:%S')} {printable}{BColors.ENDC}"
 
-    if not hide_logs:
+    if not hide_logs or prio < 0:
         print(log_entry)
 
-    if write_logs:
+    if write_logs or prio < 0:
         with open(logfile_path, 'a+') as logfile:
             logfile.write(f'{log_entry}\n')
+
+
+class BColors:
+    HINT = '\033[94m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    HEADER = '\033[95m'
+    ENDC = '\033[0m'
+
+    @staticmethod
+    def color(priority: int) -> str:
+        if priority == 0:
+            return ''
+
+        # err and warn
+        if priority == -1:
+            return BColors.WARNING
+        elif priority == -2:
+            return BColors.FAIL
+
+        # colors
+        elif priority == 1:
+            return BColors.HEADER
+        elif priority == 2:
+            return BColors.HINT
+
+        else:
+            raise ValueError  # TODO genauer beschreiben

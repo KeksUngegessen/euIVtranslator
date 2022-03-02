@@ -49,7 +49,7 @@ def get_file_paths_from(dir_path: str) -> Generator[str, None, None]:
 def log(printable: any, prio: int = 0, logfile_path='logs.txt', hide_logs=False, write_logs=False) -> None:
     """Creates a log with additional information such as time of creation."""
 
-    log_entry: str = f"{BColors.color(prio)}{datetime.now().strftime('%H:%M:%S')} {printable}{BColors.ENDC}"
+    log_entry: str = f"{BColors.get_color(prio)}{datetime.now().strftime('%H:%M:%S')} {printable}{BColors.END_COLOR}"
 
     if not hide_logs or prio < 0:
         print(log_entry)
@@ -64,10 +64,10 @@ class BColors:
     WARNING = '\033[93m'
     FAIL = '\033[91m'
     HEADER = '\033[95m'
-    ENDC = '\033[0m'
+    END_COLOR = '\033[0m'
 
     @staticmethod
-    def color(priority: int) -> str:
+    def get_color(priority: int) -> str:
         if priority == 0:
             return ''
 

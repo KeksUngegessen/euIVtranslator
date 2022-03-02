@@ -1,10 +1,9 @@
 import os
 import argparse
 
-
 # argument defaults
 DEFAULT_DEST_PATH: str = os.path.normpath(r'..\translations')
-DEFAULT_LOGFILE_DIR: str = os.path.normpath(r'..\logs')
+DEFAULT_LOGFILE_DIR: str = os.path.normpath(r'..\.logs')
 DEFAULT_THREADS: int = 4
 DEFAULT_HIDE_LOGS: bool = False
 DEFAULT_WRITE_LOGS: bool = False

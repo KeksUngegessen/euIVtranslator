@@ -1,6 +1,7 @@
 ### This project
 
-/logs/
+/.logs/
+/.webdrivers/
 /translations/
 
 # EU4 localisation directories

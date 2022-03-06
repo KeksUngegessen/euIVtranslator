@@ -2,6 +2,7 @@ import os.path
 from typing import Generator
 from datetime import datetime
 
+
 os.system('color')
 
 
@@ -23,8 +24,7 @@ def copy_dir_tree(src_path: str, dest_path: str) -> bool:
 
     for (dir_root, folders, _) in os.walk(src_path):
         for folder in folders:
-            subdir_dest_path: str = os.path.join(dir_root[len(src_path):], folder)
-            full_dest_path: str = os.path.join(dest_path, subdir_dest_path)
+            full_dest_path: str = os.path.join(dir_root, folder)
             if not os.path.isdir(full_dest_path):
                 os.mkdir(full_dest_path)
                 dir_creation_needed = True
@@ -43,7 +43,7 @@ def get_file_paths_from(dir_path: str) -> Generator[str, None, None]:
 
     for (dir_root, _, files) in os.walk(dir_path):
         for file in files:
-            yield os.path.join(dir_path, dir_root[len(dir_path):], file)
+            yield os.path.join(dir_root, file)
 
 
 def log(printable: any, prio: int = 0, logfile_path='logs.txt', hide_logs=False, write_logs=False) -> None:
